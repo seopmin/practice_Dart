@@ -1,4 +1,6 @@
+import 'package:adv_basics/data/questions.dart';
 import 'package:adv_basics/questions_screen.dart';
+import 'package:adv_basics/result_screen.dart';
 import 'package:adv_basics/start_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,7 @@ class Quiz extends StatefulWidget {
 }
 
 class _QuizState extends State<Quiz> {
+  final List<String> selectedAnswer = [];
   Widget? activeScreen;
   var activeScreen2 = 'start-screen';
 
@@ -22,11 +25,27 @@ class _QuizState extends State<Quiz> {
     super.initState();
   }
 
-  void switchScreen() {
+  void switchScreen(int i) {
     setState(() {
+      if (i == 0) {
+        activeScreen2 = 'start-screen';
+        selectedAnswer.clear();
+        print("selectedAnswer is cleared");
+      } else {
+        activeScreen2 = 'quiz-screen';
+      }
       // activeScreen = const QuestionsScreen();
-      activeScreen2 = 'quiz-screen';
     });
+  }
+
+  void chooseAnswer(String answer) {
+    selectedAnswer.add(answer);
+    if (selectedAnswer.length == questions.length) {
+      setState(() {
+        activeScreen2 = 'next-screen';
+      });
+    }
+    print(selectedAnswer);
   }
 
   @override
@@ -38,8 +57,10 @@ class _QuizState extends State<Quiz> {
   Widget build(context) {
     Widget currentScreen = StartScreen(switchScreen);
 
-    if (activeScreen2 != 'start-screen') {
-      currentScreen = const QuestionsScreen();
+    if (activeScreen2 == 'quiz-screen') {
+      currentScreen = QuestionsScreen(chooseAnswer: chooseAnswer);
+    } else if (activeScreen2 == 'next-screen') {
+      currentScreen = ResultScreen(switchScreen, 2, selectedAnswer);
     }
 
     return MaterialApp(

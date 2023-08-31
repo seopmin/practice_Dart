@@ -1,9 +1,12 @@
 import 'package:adv_basics/answer_button.dart';
 import 'package:flutter/material.dart';
 import 'package:adv_basics/data/questions.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class QuestionsScreen extends StatefulWidget {
-  const QuestionsScreen({super.key});
+  const QuestionsScreen({required this.chooseAnswer, super.key});
+
+  final void Function(String answer) chooseAnswer;
 
   @override
   State<QuestionsScreen> createState() {
@@ -14,11 +17,10 @@ class QuestionsScreen extends StatefulWidget {
 class _QuestionsScreenState extends State<QuestionsScreen> {
   var currentQuestionIndex = 0;
 
-  void nextQuestion() {
+  void nextQuestion(String e) {
+    widget.chooseAnswer(e);
     setState(() {
-      questions.length == currentQuestionIndex + 1
-          ? currentQuestionIndex = 0
-          : currentQuestionIndex++;
+      currentQuestionIndex++;
     });
   }
 
@@ -36,7 +38,10 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
               children: [
                 Text(
                   currentQuestion.text,
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                  style: GoogleFonts.nunitoSans(
+                      color: const Color.fromARGB(255, 216, 150, 255),
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
                 // map으로 반환하여도 리스트로 남기 때문에 spread 연산자를 사용해야함.

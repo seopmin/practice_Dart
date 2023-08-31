@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 class StartScreen extends StatelessWidget {
   const StartScreen(this.switchScreen, {super.key});
 
-  final void Function() switchScreen;
+  final void Function(int i) switchScreen;
 
   void clickHandler() {
-    switchScreen();
+    switchScreen(1);
   }
 
   @override
