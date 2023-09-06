@@ -1,3 +1,4 @@
+import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
 
 class NewExpense extends StatefulWidget {
@@ -11,6 +12,7 @@ class NewExpenseState extends State<NewExpense> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   DateTime? _selectedDate;
+  Category? _selectedCategory;
 
   void _presentDatePicker() async {
     final now = DateTime.now();
@@ -32,6 +34,15 @@ class NewExpenseState extends State<NewExpense> {
     _titleController.dispose(); // 더이상 메모리에 남아있지 않아도 되기 때문에
     _amountController.dispose();
     super.dispose();
+  }
+
+  void _submitExpeseDate() {
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+
+    if (_titleController.text.trim().isEmpty || amountIsInvalid || _selectedDate == null) {
+      showDialog(context: context, builder: );
+    }
   }
 
   @override
@@ -63,7 +74,9 @@ class NewExpenseState extends State<NewExpense> {
                   child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Text('Selected Date'),
+                  Text(_selectedDate == null
+                      ? 'No date selected'
+                      : formatter.format(_selectedDate!)),
                   IconButton(
                       onPressed: _presentDatePicker,
                       icon: const Icon(Icons.calendar_month))
@@ -71,8 +84,25 @@ class NewExpenseState extends State<NewExpense> {
               ))
             ],
           ),
+          const SizedBox(
+            height: 16,
+          ),
           Row(
             children: [
+              DropdownButton(
+                  value: _selectedCategory,
+                  items: Category.values
+                      .map((e) => DropdownMenuItem(
+                          value: e, child: Text(e.name.toUpperCase())))
+                      .toList(),
+                  onChanged: (value) {
+                    if (value == null) {
+                      return;
+                    }
+                    setState(() {
+                      _selectedCategory = value;
+                    });
+                  }),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
